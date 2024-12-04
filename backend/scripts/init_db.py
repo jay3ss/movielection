@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import time
+from datetime import datetime
 from uuid import uuid4
 
 import ollama
@@ -110,11 +111,16 @@ def seed_database():
                     ):
                         tmdb_id = get_tmdb_id(cleaned_title)
                         imdb_id = get_imdb_id(tmdb_id) if tmdb_id is not None else None
+                        premiere_date = movie_data.get("PremiereDate", None)
+                        if premiere_date is not None:
+                            premiere_date = datetime.fromisoformat(premiere_date)
                         movie = Movie(
                             title=cleaned_title,
                             duration=duration,
                             imdb=imdb_id,
-                            id=str(uuid4()),
+                            id=movie_data.get("Id", str(uuid4())),
+                            rating=movie_data.get("OfficialRating", None),
+                            premiere_date=premiere_date,
                         )
                         session.add(movie)
                         logger.debug(f"Successfully added {cleaned_title}")
