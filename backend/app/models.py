@@ -15,7 +15,7 @@ class Movie(SQLModel, table=True):
     title: str = Field(index=True)
     duration: int  # minutes
     imdb: str | None
-    premier_date: datetime | None
+    premiere_date: datetime | None
     rating: str | None
 
 
