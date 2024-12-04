@@ -22,7 +22,7 @@ logger.setLevel(logging.INFO)
 # Create a stream handler to output to the console
 console_handler = logging.StreamHandler()
 console_handler.setLevel(
-    logging.DEBUG
+    logging.INFO
 )  # You can set this to INFO, WARNING, etc. as needed
 
 # Define the logging format
@@ -57,7 +57,7 @@ def run_migrations():
         command.upgrade(alembic_cfg, "head")
         logger.info("Migrations completed successfully")
     except Exception as e:
-        logger.error("Error during migrations:", e)
+        logger.exception("Error during migrations:", e)
         raise
 
 
@@ -79,12 +79,12 @@ def fetch_movies_from_jellyfin():
 
         return filter_movies_by_format(movies_data)
     except requests.exceptions.RequestException as e:
-        logger.error(
+        logger.exception(
             f"Error fetching data from Jellyfin server @ {JELLYFIN_SERVER_URL}: {e}"
         )
         return []
     except KeyError as e:
-        logger.error(f"Error with key: {e}")
+        logger.exception(f"Error with key: {e}")
 
 
 def seed_database():
@@ -103,7 +103,9 @@ def seed_database():
                             movie_data.get("RunTimeTicks", 0)
                         )  # mins
                     except Exception as e:
-                        logger.error(f"Error cleaning title or classifying: {e}")
+                        logger.exception(
+                            f"Error cleaning title or classifying {movie_data.get("Name", not_a_movie)}: {e}"
+                        )
                         continue
 
                     if (
@@ -125,16 +127,18 @@ def seed_database():
                             premiere_date=premiere_date,
                         )
                         session.add(movie)
-                        logger.debug(f"Successfully added {cleaned_title}")
+                        logger.info(f"Successfully added {cleaned_title}")
                         if num % BATCH_SIZE == 0:
                             session.commit()
-                            logger.debug(f"Committed {num} records")
+                            logger.info(f"Committed {num} records")
+                    else:
+                        logger.info(f"Skipping {movie_data.get("Name", not_a_movie)}")
                 session.commit()
 
         else:
             logger.info("No movies to seed")
     except SQLAlchemyError as e:
-        logger.error(f"Error while seeding database: {e}")
+        logger.exception(f"Error while seeding database: {e}")
 
 
 # --------------- HELPERS ---------------#
