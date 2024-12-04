@@ -162,7 +162,8 @@ def clean_and_classify_title(title: str) -> tuple[str, str]:
     (such as resolution, formats, years, etc.), then classify it as either a 'movie', \
     'TV show', or 'educational'. Output only a valid JSON structure containing two fields: \
     'cleaned_title' and 'classification'. No additional explanation or text should be \
-    included: {title}"
+    included. Ensure that when you clean the title not to remove relevant text (e.g.,  \
+    title = '13 Going on 30' -> cleaned_title = '13 Going on 30'): {title}"
 
     # Use the Ollama API to get the response
     response = ollama.chat(
