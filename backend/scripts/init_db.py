@@ -74,8 +74,6 @@ def fetch_movies_from_jellyfin():
         movies_data = response.json().get("Items", [])
         logger.info(f"Successfully fetched {len(movies_data)} from Jellyfin")
 
-        # filter the movies for low-quality files
-        excluded_formats = {"avi"}
         return filter_movies_by_format(movies_data)
     except requests.exceptions.RequestException as e:
         logger.error(
