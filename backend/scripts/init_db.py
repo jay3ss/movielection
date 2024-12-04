@@ -16,7 +16,7 @@ from sqlmodel import Session
 from app.core.db import engine
 from app.models import Movie
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # Create a stream handler to output to the console
