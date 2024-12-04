@@ -1,0 +1,12 @@
+alembic
+fastapi[standard]
+fastapi-cli
+httpx
+ipython
+jellyfin-apiclient-python
+ollama
+pydantic-settings
+pydantic-sqlite
+python-dotenv
+psycopg[binary,pool]
+sqlmodel
