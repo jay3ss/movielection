@@ -17,7 +17,7 @@ from app.core.db import engine
 from app.models import Movie
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # Create a stream handler to output to the console
 console_handler = logging.StreamHandler()
@@ -30,7 +30,9 @@ formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 console_handler.setFormatter(formatter)
 
 # Add the handler to the logger
-logger.addHandler(console_handler)
+if not logger.hasHandlers():
+    logger.addHandler(console_handler)
+logger.propagate = False
 
 
 load_dotenv(".env")
