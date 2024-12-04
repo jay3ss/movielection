@@ -94,7 +94,8 @@ def seed_database():
         not_a_movie = "not a movie"
         if movies_data:
             with Session(engine) as session:
-                for num, movie_data in enumerate(movies_data, 1):
+                num = 0
+                for movie_data in movies_data:
                     try:
                         cleaned_title, classification = clean_and_classify_title(
                             movie_data.get("Name", not_a_movie)
@@ -113,6 +114,7 @@ def seed_database():
                         and cleaned_title != not_a_movie
                         and duration > MINIMUM_MOVIE_DURATION
                     ):
+                        num += 1
                         tmdb_id = get_tmdb_id(cleaned_title)
                         imdb_id = get_imdb_id(tmdb_id) if tmdb_id is not None else None
                         premiere_date = movie_data.get("PremiereDate", None)
