@@ -73,7 +73,7 @@ def fetch_movies_from_jellyfin():
         response = requests.get(url, params=params)
         response.raise_for_status()
         movies_data = response.json().get("Items", [])
-        logger.info(f"Successfully fetched {len(movies_data)} from Jellyfin")
+        logger.info(f"Successfully fetched {len(movies_data)} titles from Jellyfin")
 
         return filter_movies_by_format(movies_data)
     except requests.exceptions.RequestException as e:
