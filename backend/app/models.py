@@ -17,6 +17,7 @@ class Movie(SQLModel, table=True):
     imdb: str | None
     premiere_date: datetime | None
     rating: str | None
+    image: str | None
 
 
 class Election(SQLModel, table=True):
