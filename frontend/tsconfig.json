@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
+    "module": "es2022", // or "esnext" if you prefer
+    "target": "es2022", // Optional, aligns with module
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
     },
     "jsx": "react-jsx", // Enables React JSX support
     "esModuleInterop": true, // Allow default imports for CommonJS modules
-    "allowSyntheticDefaultImports": true // Optional, allows syntactic sugar for default imports
+    "allowSyntheticDefaultImports": true, // Optional, allows syntactic sugar for default imports
+    "moduleResolution": "Node"
   },
   "include": ["src"], // Ensure TypeScript includes the `src` folder
   "exclude": ["node_modules"] // Standard exclusion
