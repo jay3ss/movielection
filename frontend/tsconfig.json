@@ -1,12 +1,13 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   "compilerOptions": {
+    "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
-    }
-  }
+    },
+    "jsx": "react-jsx", // Enables React JSX support
+    "esModuleInterop": true, // Allow default imports for CommonJS modules
+    "allowSyntheticDefaultImports": true // Optional, allows syntactic sugar for default imports
+  },
+  "include": ["src"], // Ensure TypeScript includes the `src` folder
+  "exclude": ["node_modules"] // Standard exclusion
 }
