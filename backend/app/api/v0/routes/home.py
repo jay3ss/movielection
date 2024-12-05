@@ -1,4 +1,5 @@
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 
 from app.api.v0.deps import SessionDep
 from app.crud import get_latest_election
@@ -6,12 +7,7 @@ from app.crud import get_latest_election
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/election")
 async def home(session: SessionDep):
     election = get_latest_election(session)
-    status = election is not None
-    if not status:
-        pass
-    else:
-        pass
-    return {"message": "home!"}
+    return election

@@ -13,7 +13,7 @@ class ElectionMovieLink(SQLModel, table=True):
 class Movie(SQLModel, table=True):
     id: str | None = Field(default=None, primary_key=True)
     title: str = Field(index=True)
-    duration: int  # minutes
+    duration: float  # minutes
     imdb: str | None
     premiere_date: datetime | None
     rating: str | None
