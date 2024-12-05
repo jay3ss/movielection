@@ -1,8 +1,8 @@
-"""Initial Migration
+"""Update duration column to float
 
-Revision ID: 5f8cccdfabdb
+Revision ID: b4a360343afd
 Revises: 
-Create Date: 2024-12-03 17:43:48.860873
+Create Date: 2024-12-04 21:44:10.758656
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import sqlmodel.sql.sqltypes
 
 
 # revision identifiers, used by Alembic.
-revision: str = '5f8cccdfabdb'
+revision: str = 'b4a360343afd'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,7 +32,7 @@ def upgrade() -> None:
     op.create_table('movie',
     sa.Column('id', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('title', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.Column('duration', sa.Integer(), nullable=False),
+    sa.Column('duration', sa.Float(), nullable=False),
     sa.Column('imdb', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
     sa.Column('premiere_date', sa.DateTime(), nullable=True),
     sa.Column('rating', sqlmodel.sql.sqltypes.AutoString(), nullable=True),
