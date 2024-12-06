@@ -45,7 +45,10 @@ BATCH_SIZE = int(os.environ.get("BATCH_SIZE", 25))
 JELLYFIN_API_KEY = os.environ.get("JELLYFIN_API_KEY")
 JELLYFIN_SERVER_URL = os.environ.get("JELLYFIN_SERVER_URL")
 MINIMUM_MOVIE_DURATION = int(os.environ.get("MINIMUM_MOVIE_DURATION", 25))
+TMDB_API_BASE_URL = os.environ.get("TMDB_API_BASE_URL")
 TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
+TMDB_IMAGE_BASE_URL = os.environ.get("TMDB_IMAGE_BASE_URL")
+TMDB_READ_ACCESS_TOKEN = os.environ.get("TMDB_READ_ACCESS_TOKEN")
 
 
 def run_migrations():
@@ -118,6 +121,7 @@ def seed_database():
                         tmdb_id = get_tmdb_id(cleaned_title)
                         imdb_id = get_imdb_id(tmdb_id) if tmdb_id is not None else None
                         premiere_date = movie_data.get("PremiereDate", None)
+                        image = get_tmdb_image(movie.title)
                         if premiere_date is not None:
                             premiere_date = datetime.fromisoformat(premiere_date)
                         movie = Movie(
@@ -127,6 +131,7 @@ def seed_database():
                             id=movie_data.get("Id", str(uuid4())),
                             rating=movie_data.get("OfficialRating", None),
                             premiere_date=premiere_date,
+                            image=image,
                         )
                         session.add(movie)
                         logger.info(f"Successfully added {cleaned_title}")
@@ -196,7 +201,7 @@ def get_tmdb_id(movie_title: str) -> str:
 
 
 def get_imdb_id(tmdb_id: str) -> str:
-    url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/external_ids"
+    url = f"{TMDB_API_BASE_URL}/movie/{tmdb_id}/external_ids"
     params = {"api_key": TMDB_API_KEY}
     response = requests.get(url, params=params)
 
@@ -208,6 +213,35 @@ def get_imdb_id(tmdb_id: str) -> str:
         return response.json().get("imdb_id", None)
 
     logger.warning(f"Failed to get data for IMDb id {tmdb_id}")
+    return None
+
+
+def get_tmdb_image(tmdb_id: str) -> str:
+    url = f"{TMDB_API_BASE_URL}/movie/{tmdb_id}/images?language=en"
+
+    headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {TMDB_READ_ACCESS_TOKEN}",
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 429:
+        time.sleep(1)
+        response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        # Check if posters are available
+        posters = response.json().get("posters", [])
+        if posters:
+            # Get the first poster and construct the image URL
+            image_path = posters[0]["file_path"]
+            full_image_url = f"{TMDB_IMAGE_BASE_URL}{image_path}"
+            return full_image_url
+
+    logger.error(
+        f"Error fetching image for {tmdb_id}: {response.status_code}, {response.json().get('status_message')}"
+    )
     return None
 
 
