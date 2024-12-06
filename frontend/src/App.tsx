@@ -1,26 +1,22 @@
-import { useState } from "react";
+import AppTitle from "@/components/AppTitle";
+import { ElectionContainer } from "@/components/ElectionContainer";
 
-import AppTitle from "./components/AppTitle";
+import { useGetCurrentElection } from "@/hooks/useGetCurrentElection";
 
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const { election, loading, error } = useGetCurrentElection();
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
       <AppTitle />
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <ElectionContainer />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
