@@ -1,61 +1,72 @@
-import React, { useState } from "react";
+import React from "react";
 
-import MovieCard from "@/components/MovieCard";
+import Typography from "@mui/material/Typography";
+
+import MovieList from "@/components/MovieList";
+import SearchBar from "@/components/SearchBar";
 import { useGetMovies } from "@/hooks/useGetMovies";
 import { Movie } from "@/types";
 
 const ElectionForm = () => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
+  const [searchQuery, setSearchQuery] = React.useState<string>("");
+  const [selectedMovies, setSelectedMovies] = React.useState<Movie[]>([]);
 
   const { movies, error, loading } = useGetMovies();
 
-  if (loading) return <div>Loading...</div>;
-  if (error) {
-    console.error(error);
-    return <div>Error fetching movies: {error.message}</div>;
-  }
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
+  const renderCount = React.useRef(0);
 
-  const handleCheckboxChange = (movie: Movie) => {
+  const filteredMovies: Movie[] = React.useMemo(
+    () =>
+      movies?.filter((movie) =>
+        movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [movies, searchQuery]
+  );
+
+  const handleSearchChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+      console.log(searchQuery);
+    },
+    [searchQuery]
+  );
+
+  const handleCheckboxChange = React.useCallback((movie: Movie) => {
     setSelectedMovies((prev) =>
       prev.includes(movie)
         ? prev.filter((m) => m.id !== movie.id)
         : [...prev, movie]
     );
-  };
+  }, []);
 
-  const filteredMovies: Movie[] = movies?.filter((movie) =>
-    movie.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  React.useEffect(() => {
+    renderCount.current += 1;
+    console.log(`Component has rendered ${renderCount.current} times`);
+  });
+
+  if (loading) return <Typography align="center">Loading...</Typography>;
+  if (error) {
+    console.error(error);
+    return (
+      <Typography align="center">
+        Error fetching movies: {error.message}
+      </Typography>
+    );
+  }
+
+  const isChecked = (movie: Movie) => selectedMovies.includes(movie);
 
   return (
-    <div>
-      {/* sticky search input*/}
-      <input
-        type="text"
-        placeholder="Search for movies"
-        value={searchQuery}
-        onChange={handleSearchChange}
-        style={{ position: "sticky", top: 0, zIndex: 100, width: "100%" }}
-      />
+    <React.Fragment>
+      {/* sticky search input: NOTE: make this sticky!*/}
+      <SearchBar query={searchQuery} onChange={handleSearchChange} />
 
-      {/* movie list */}
-      <div style={{ maxHeight: "600px", overflowY: "scroll" }}>
-        {filteredMovies?.map((movie) => (
-          <div key={movie.id} style={{ display: "flex", alignItems: "center" }}>
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-              checked={selectedMovies.includes(movie)}
-              onChange={handleCheckboxChange}
-            />
-          </div>
-        ))}
-      </div>
-    </div>
+      <MovieList
+        movies={filteredMovies}
+        onChange={handleCheckboxChange}
+        checked={isChecked}
+      />
+    </React.Fragment>
   );
 };
 

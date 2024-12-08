@@ -16,19 +16,19 @@ const fromatDateString = (d: string) =>
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, checked, onChange }) => {
   return (
-    <div style={styles.card}>
+    <div className="card">
       <input
         type="checkbox"
         checked={checked}
         onChange={() => onChange(movie)}
       />
       {movie.imdb && (
-        <img src={movie.image} alt={movie.title} style={styles.thumbnail} />
+        <img src={movie.image} alt={movie.title} className="card-thumbnail" />
       )}
-      <div style={styles.content}>
+      <div className="card-content">
         <div>
-          <h3 style={styles.title}>{movie.title}</h3>
-          <div>
+          <h3 className="card-title">{movie.title}</h3>
+          <div className="card-movie-metadata">
             <p>
               <strong>Rating:</strong> {movie.rating || "N/A"}
             </p>
@@ -52,34 +52,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, checked, onChange }) => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  card: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px",
-    margin: "10px 0",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-    width: "100%",
-  },
-  content: {
-    flex: "1",
-  },
-  title: {
-    margin: "0",
-    fontSize: "18px",
-  },
-  thumbnail: {
-    width: "6rem",
-    height: "auto",
-    borderRadius: "4px",
-    marginLeft: "10px",
-    marginRight: "10px",
-  },
 };
 
 export default MovieCard;

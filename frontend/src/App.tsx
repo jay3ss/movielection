@@ -1,23 +1,38 @@
-import AppTitle from "@/components/AppTitle";
-import { ElectionContainer } from "@/components/ElectionContainer";
+import Container from "@mui/material/Container";
+import { ThemeProvider, createTheme } from "@mui/material";
 
-import { useGetCurrentElection } from "@/hooks/useGetCurrentElection";
+import ElectionContainer from "@/components/ElectionContainer";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 import "./App.css";
 
+const theme = createTheme({
+  components: {
+    MuiStack: {
+      defaultProps: {
+        useFlexGap: true,
+      },
+    },
+  },
+});
+
 function App() {
-  const { election, loading, error } = useGetCurrentElection();
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   return (
-    <>
-      <AppTitle />
-      <div className="card">
-        <ElectionContainer />
-      </div>
-    </>
+    <ErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <Container
+          maxWidth="md"
+          className="container"
+          sx={{
+            p: {
+              xs: 2,
+            },
+          }}
+        >
+          <ElectionContainer />
+        </Container>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

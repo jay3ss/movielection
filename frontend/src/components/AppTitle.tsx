@@ -21,8 +21,17 @@ interface AppTitleProps {
   variant?: Variant;
 }
 
-const AppTitle: React.FC<AppTitleProps> = ({ variant = "h1" }) => {
-  return <Typography variant={variant}>MoviElection</Typography>;
+const AppTitle: React.FC<AppTitleProps> = ({ variant = "h3" }) => {
+  return (
+    <Typography
+      variant={variant}
+      align="center"
+      className="app-title"
+      component="h1"
+    >
+      MoviElection
+    </Typography>
+  );
 };
 
 export default AppTitle;
