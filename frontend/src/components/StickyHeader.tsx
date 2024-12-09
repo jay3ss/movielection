@@ -1,9 +1,10 @@
 import React from "react";
 
 import Box from "@mui/material/Box";
-
 import AppTitle from "@/components/AppTitle";
 import SearchBar, { SearchBarProps } from "@/components/SearchBar";
+
+import ElectionTimePicker from "@/components/ElectionTimePicker";
 
 const StickyHeader: React.FC<SearchBarProps> = React.memo(
   ({ query, onChange }) => {
@@ -15,10 +16,15 @@ const StickyHeader: React.FC<SearchBarProps> = React.memo(
           top: 0,
           backgroundColor: "white",
           zIndex: 99999,
+          pb: 2,
+          pt: 1,
         }}
       >
         <AppTitle />
-        <SearchBar query={query} onChange={onChange} />
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <SearchBar query={query} onChange={onChange} />
+          <ElectionTimePicker />
+        </Box>
       </Box>
     );
   }
