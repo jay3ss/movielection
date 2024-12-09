@@ -14,7 +14,12 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
     error: electionError,
   } = useGetCurrentElection();
   const { movies, loading: movieLoading, error: movieError } = useGetMovies();
-  const [searchQuery, setSearchQuery] = React.useState<string>("");
+  const [searchQuery, setQuery] = React.useState<string>("");
+
+  const setSearchQuery = React.useCallback(
+    (value: string) => setQuery(value),
+    []
+  );
 
   const value = React.useMemo(
     () => ({
@@ -35,6 +40,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
       movieError,
       movieLoading,
       searchQuery,
+      setSearchQuery,
     ]
   );
 

@@ -18,8 +18,9 @@ const ElectionContainer: React.FC = () => {
   } = useAppContext();
 
   const handleSearchChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value);
+    (value: string) => {
+      console.log(value);
+      setSearchQuery(value);
     },
     [setSearchQuery]
   );
