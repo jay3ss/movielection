@@ -22,7 +22,7 @@ const ElectionTimePicker = () => {
         <Dialog open={open} onClose={handleClose}>
           <DialogContent>
             <TimePicker
-              label="Select Time"
+              label="Election duration"
               value={value}
               onChange={(newValue) => {
                 setValue(newValue);
