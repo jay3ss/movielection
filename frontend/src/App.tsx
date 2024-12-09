@@ -1,4 +1,5 @@
 import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material";
 
 import ElectionContainer from "@/components/ElectionContainer";
@@ -23,6 +24,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
         <AppContextProvider>
+          <CssBaseline enableColorScheme />
           <Container
             maxWidth="md"
             className="container"
