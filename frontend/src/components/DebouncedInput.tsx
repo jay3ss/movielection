@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Input from "@mui/material/Input";
+import TextField from "@mui/material/TextField";
 
 import useDebounce from "@/hooks/useDebounce";
 
@@ -20,17 +20,25 @@ const DebouncedInput: React.FC<DebouncedInputProps> = ({
   const [inputValue, setInputValue] = useState<string>("");
   const debouncedValue = useDebounce(inputValue, delay);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Escape") {
+      setInputValue("");
+    }
+  };
+
   React.useEffect(() => {
     onChange(debouncedValue);
   }, [debouncedValue, onChange]);
 
   return (
-    <Input
+    <TextField
       className={className}
       type="text"
       value={inputValue}
       onChange={(e) => setInputValue(e.target.value)}
+      onKeyDown={handleKeyDown}
       placeholder={placeholder}
+      variant="standard"
     />
   );
 };
