@@ -3,6 +3,7 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 
 import MovieList from "@/components/MovieList";
+import StartElectionButton from "@/components/StartElectionButton";
 
 import { useAppContext } from "@/context/useAppContext";
 
@@ -10,7 +11,6 @@ import { Movie } from "@/types";
 
 const ElectionForm = React.memo(() => {
   const [selectedMovies, setSelectedMovies] = React.useState<string[]>([]);
-  console.log(selectedMovies);
 
   const {
     movies,
@@ -52,7 +52,12 @@ const ElectionForm = React.memo(() => {
     );
   }
 
-  return <MovieList movies={filteredMovies} onChange={handleCheckboxChange} />;
+  return (
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <MovieList movies={filteredMovies} onChange={handleCheckboxChange} />
+      <StartElectionButton movieIds={selectedMovies} />
+    </div>
+  );
 });
 
 export default ElectionForm;
