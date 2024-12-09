@@ -3,12 +3,26 @@ import React from "react";
 import { Grid2 as Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
-import AppTitle from "@/components/AppTitle";
 import ElectionForm from "@/components/ElectionForm";
-import { useGetCurrentElection } from "@/hooks/useGetCurrentElection";
+import StickyHeader from "@/components/StickyHeader";
+
+import { useAppContext } from "@/context/useAppContext";
 
 const ElectionContainer: React.FC = () => {
-  const { election, loading, error } = useGetCurrentElection();
+  const {
+    election,
+    electionLoading: loading,
+    electionError: error,
+    searchQuery,
+    setSearchQuery,
+  } = useAppContext();
+
+  const handleSearchChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+    },
+    [setSearchQuery]
+  );
 
   if (loading) return <Typography align="center">Loading...</Typography>;
   if (error) {
@@ -20,7 +34,7 @@ const ElectionContainer: React.FC = () => {
     return (
       <Grid container spacing={2} className="election-container">
         <Grid size={{ xs: 12 }}>
-          <AppTitle />
+          <StickyHeader onChange={handleSearchChange} query={searchQuery} />
           <ElectionForm />
         </Grid>
       </Grid>

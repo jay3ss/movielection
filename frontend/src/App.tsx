@@ -4,6 +4,8 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import ElectionContainer from "@/components/ElectionContainer";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
+import { AppContextProvider } from "@/context/AppContextProvider";
+
 import "./App.css";
 
 const theme = createTheme({
@@ -20,17 +22,19 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
-        <Container
-          maxWidth="md"
-          className="container"
-          sx={{
-            p: {
-              xs: 2,
-            },
-          }}
-        >
-          <ElectionContainer />
-        </Container>
+        <AppContextProvider>
+          <Container
+            maxWidth="md"
+            className="container"
+            sx={{
+              p: {
+                xs: 2,
+              },
+            }}
+          >
+            <ElectionContainer />
+          </Container>
+        </AppContextProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

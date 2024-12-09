@@ -41,7 +41,7 @@ interface MovieListItemProps {
 
 const MovieListItem: React.FC<MovieListItemProps> = React.memo(
   ({ movie, checked = null, onChange = null }) => {
-    console.log(checked, onChange);
+    // console.log(checked, onChange);
     return (
       <li
         style={{

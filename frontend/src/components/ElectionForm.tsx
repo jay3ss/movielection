@@ -3,33 +3,29 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 
 import MovieList from "@/components/MovieList";
-import SearchBar from "@/components/SearchBar";
-import { useGetMovies } from "@/hooks/useGetMovies";
+
+import { useAppContext } from "@/context/useAppContext";
+
 import { Movie } from "@/types";
 
 const ElectionForm = () => {
-  const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [selectedMovies, setSelectedMovies] = React.useState<Movie[]>([]);
 
-  const { movies, error, loading } = useGetMovies();
+  const {
+    movies,
+    movieError: error,
+    movieLoading: loading,
+    searchQuery,
+  } = useAppContext();
 
   const renderCount = React.useRef(0);
 
-  const filteredMovies: Movie[] = React.useMemo(
-    () =>
-      movies?.filter((movie) =>
-        movie.title.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
-    [movies, searchQuery]
-  );
+  const filteredMovies: Movie[] = movies?.filter((movie) => {
+    console.log("searchQuery:", searchQuery);
+    return movie.title.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
-  const handleSearchChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(event.target.value);
-      console.log(searchQuery);
-    },
-    [searchQuery]
-  );
+  console.log("filteredMovies.length:", filteredMovies.length);
 
   const handleCheckboxChange = React.useCallback((movie: Movie) => {
     setSelectedMovies((prev) =>
@@ -57,16 +53,11 @@ const ElectionForm = () => {
   const isChecked = (movie: Movie) => selectedMovies.includes(movie);
 
   return (
-    <React.Fragment>
-      {/* sticky search input: NOTE: make this sticky!*/}
-      <SearchBar query={searchQuery} onChange={handleSearchChange} />
-
-      <MovieList
-        movies={filteredMovies}
-        onChange={handleCheckboxChange}
-        checked={isChecked}
-      />
-    </React.Fragment>
+    <MovieList
+      movies={filteredMovies}
+      onChange={handleCheckboxChange}
+      checked={isChecked}
+    />
   );
 };
 
