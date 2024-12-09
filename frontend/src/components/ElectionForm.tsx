@@ -8,8 +8,9 @@ import { useAppContext } from "@/context/useAppContext";
 
 import { Movie } from "@/types";
 
-const ElectionForm = () => {
-  const [selectedMovies, setSelectedMovies] = React.useState<Movie[]>([]);
+const ElectionForm = React.memo(() => {
+  const [selectedMovies, setSelectedMovies] = React.useState<string[]>([]);
+  console.log(selectedMovies);
 
   const {
     movies,
@@ -20,18 +21,19 @@ const ElectionForm = () => {
 
   const renderCount = React.useRef(0);
 
-  const filteredMovies: Movie[] = movies?.filter((movie) => {
-    console.log("searchQuery:", searchQuery);
-    return movie.title.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filteredMovies: Movie[] = React.useMemo(
+    () =>
+      movies?.filter((movie) => {
+        return movie.title.toLowerCase().includes(searchQuery.toLowerCase());
+      }),
+    [searchQuery, movies]
+  );
 
-  console.log("filteredMovies.length:", filteredMovies.length);
-
-  const handleCheckboxChange = React.useCallback((movie: Movie) => {
+  const handleCheckboxChange = React.useCallback((movieId: string) => {
     setSelectedMovies((prev) =>
-      prev.includes(movie)
-        ? prev.filter((m) => m.id !== movie.id)
-        : [...prev, movie]
+      prev.includes(movieId)
+        ? prev.filter((mId) => mId !== movieId)
+        : [...prev, movieId]
     );
   }, []);
 
@@ -50,15 +52,7 @@ const ElectionForm = () => {
     );
   }
 
-  const isChecked = (movie: Movie) => selectedMovies.includes(movie);
-
-  return (
-    <MovieList
-      movies={filteredMovies}
-      onChange={handleCheckboxChange}
-      checked={isChecked}
-    />
-  );
-};
+  return <MovieList movies={filteredMovies} onChange={handleCheckboxChange} />;
+});
 
 export default ElectionForm;

@@ -10,68 +10,78 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
-import {
-  useTheme,
-  // useMediaQuery,
-} from "@mui/material";
+import { useTheme } from "@mui/material";
 
 import { Movie } from "@/types";
 
 interface MovieListProps {
   movies: Movie[];
-  checked: (movie: Movie) => boolean;
-  onChange: (movie: Movie) => void;
+  onChange: (movieId: string) => void;
 }
 
-const MovieList: React.FC<MovieListProps> = ({ movies }) => {
-  return (
-    <ul className="movie-list">
-      {movies.map((movie) => (
-        <MovieListItem key={movie.id} movie={movie} />
-      ))}
-    </ul>
-  );
-};
+const MovieList: React.FC<MovieListProps> = React.memo(
+  ({ movies, onChange }) => {
+    const moviesList = React.useMemo(() => {
+      const handleCardClick = (event: React.MouseEvent) => {
+        const card = (event.target as HTMLElement).closest(
+          ".select-movie"
+        ) as HTMLElement;
+
+        if (card) {
+          const movieId = card.dataset.id;
+          const clickedMovie = movies.filter(
+            (movie) => movie.id === movieId
+          )[0];
+          onChange(clickedMovie.id);
+        }
+      };
+      return (
+        <ul className="movie-list" onClick={handleCardClick}>
+          {movies.map((movie) => (
+            <MovieListItem key={movie.id} movie={movie} />
+          ))}
+        </ul>
+      );
+    }, [movies, onChange]);
+    return moviesList;
+  }
+);
 
 interface MovieListItemProps {
   movie: Movie;
-  checked?: (movie: Movie) => boolean;
-  onChange?: (movie: Movie) => void;
+  onChange?: (movieId: string) => void;
 }
 
-const MovieListItem: React.FC<MovieListItemProps> = React.memo(
-  ({ movie, checked = null, onChange = null }) => {
-    // console.log(checked, onChange);
-    return (
-      <li
-        style={{
-          display: "flex",
-          padding: 2,
-          margin: 3,
-          textWrap: "pretty",
-          width: "100%",
-        }}
-        className="movie-list-item"
-      >
-        <MovieListCard movie={movie} />
-      </li>
-    );
-  }
-);
+const MovieListItem: React.FC<MovieListItemProps> = React.memo(({ movie }) => {
+  return (
+    <li
+      style={{
+        display: "flex",
+        padding: 2,
+        margin: 3,
+        textWrap: "pretty",
+        width: "100%",
+      }}
+      className="movie-list-item"
+    >
+      <MovieListCard movie={movie} />
+    </li>
+  );
+});
 
 const MovieListCard: React.FC<MovieListItemProps> = React.memo(({ movie }) => {
   const theme = useTheme();
 
   const checkboxLabel = {
-    inputProps: { "aria-label": `Select ${movie.title}` },
+    inputProps: { "aria-label": `Select ${movie.title}`, "data-role": "role" },
   };
 
   return (
-    <Card sx={{ display: "flex", width: "100%" }}>
+    <Card sx={{ display: "flex", width: "100%" }} className="movie-card">
       <CardMedia
         component="img"
         image={movie.image}
-        alt={`Post for ${movie.title}`}
+        alt={`Poster for ${movie.title}`}
         sx={{
           width: {
             xs: 77,
@@ -126,12 +136,20 @@ const MovieListCard: React.FC<MovieListItemProps> = React.memo(({ movie }) => {
               IMDb
             </Link>
           </Typography>
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox {...checkboxLabel} />}
-              label="Select"
-            />
-          </FormGroup>
+          <div data-id={movie.id}>
+            <FormGroup data-id={movie.id} className="select-movie">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    {...checkboxLabel}
+                    id={movie.id}
+                    className="select-movie-checkbox"
+                  />
+                }
+                label="Select"
+              />
+            </FormGroup>
+          </div>
         </CardContent>
       </Box>
     </Card>

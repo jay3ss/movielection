@@ -16,20 +16,27 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const { movies, loading: movieLoading, error: movieError } = useGetMovies();
   const [searchQuery, setSearchQuery] = React.useState<string>("");
 
-  return (
-    <AppContext.Provider
-      value={{
-        election,
-        electionError,
-        electionLoading,
-        movies,
-        movieError,
-        movieLoading,
-        searchQuery,
-        setSearchQuery,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+  const value = React.useMemo(
+    () => ({
+      election,
+      electionError,
+      electionLoading,
+      movies,
+      movieError,
+      movieLoading,
+      searchQuery,
+      setSearchQuery,
+    }),
+    [
+      election,
+      electionError,
+      electionLoading,
+      movies,
+      movieError,
+      movieLoading,
+      searchQuery,
+    ]
   );
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
